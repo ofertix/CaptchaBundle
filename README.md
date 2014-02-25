@@ -193,11 +193,28 @@ The default rendering is:
 ```html
 {% block captcha_widget %}
 {% spaceless %}
-    <img src="{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
-    {{ form_widget(form) }}
+    <div class="captcha_div">
+    <img src="{{ captcha_code }}" title="captcha" class="captcha_image" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+    {% if reload %}
+    <script type="text/javascript">
+        function reload_{{ image_id }}() {
+            var img = document.getElementById('{{ image_id }}');
+            img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
+        }
+    </script>
+    <a class="captcha_reload" href="javascript:reload_{{ image_id }}();" class="captcha_reload">{{ 'Renew'|trans({}, 'gregwar_captcha') }}</a>
+    {% endif %}
+    {{ form_widget(form,{ 'attr':{'class':'captcha_input' }}) }}
+    </div>
 {% endspaceless %}
 {% endblock %}
 ```
+
+You can customize the look and feel of the widget using the following css classes:
+- captcha_div: A div outside the widget
+- captcha_image: image of the captcha
+- captcha_reload: link to reload the captcha if reload is enabled.
+- captcha_input: input field
 
 Image creation
 ==============
